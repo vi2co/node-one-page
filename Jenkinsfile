@@ -4,7 +4,7 @@ pipeline {
   }
   
   environment {
-      sonarServer = "sonar-local"
+      sonarServer = "sonar-cloud"
       sonarScanner = "sonar-scanner-linux"
       sonarMainBranch = "master"
   }
@@ -25,7 +25,7 @@ pipeline {
     stage('Sonar') {
       when {
         expression {
-          env.BRANCH_NAME.matches ("master") || env.BRANCH_NAME.matches ("develop") || env.BRANCH_NAME.contains ("PR-") || env.BRANCH_NAME.contains ("release")
+          env.BRANCH_NAME.matches ("master") || env.BRANCH_NAME.matches ("develop") || env.BRANCH_NAME.matches ("sonar-cloud") || env.BRANCH_NAME.contains ("PR-") || env.BRANCH_NAME.contains ("release")
         }
       }
       steps {
