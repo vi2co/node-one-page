@@ -6,11 +6,6 @@ pipeline {
   environment {
       sonarServer = "sonar-local"
       sonarScanner = "sonar-scanner-linux"
-      sonarMainBranch = "master"
-  }
-
- tools {
-    jdk 'openjdk-11'
   }
 
   stages {
@@ -23,20 +18,12 @@ pipeline {
     }
   
     stage('Sonar') {
-      when {
-        expression {
-          env.BRANCH_NAME.matches ("master") || env.BRANCH_NAME.matches ("develop") || env.BRANCH_NAME.contains ("PR-") || env.BRANCH_NAME.contains ("release")
-        }
-      }
+      when { branch 'master' }
       steps {
         script {
           def sonarQubeScanner = tool "${env.sonarScanner}"
           withSonarQubeEnv("${env.sonarServer}") {
-            if (env.BRANCH_NAME == env.sonarMainBranch) {
-              sh "${sonarQubeScanner}/bin/sonar-scanner -Dproject.settings./sonar-project.properties"
-            } else {
-              sh "${sonarQubeScanner}/bin/sonar-scanner -Dsonar.branch.name=${env.BRANCH_NAME} -Dproject.settings./sonar-project.properties"
-            }
+            sh "${sonarQubeScanner}/bin/sonar-scanner -Dproject.settings./sonar-project.properties"
             // More parameters https://docs.sonarqube.org/latest/analysis/analysis-parameters/
           }
 
